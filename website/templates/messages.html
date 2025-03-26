@@ -86,57 +86,76 @@
 </div>
 
 <!-- Add JavaScript for Real-Time Messaging -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
 <script>
-    // WebSocket for Real-Time Messaging
-    const socket = new WebSocket(`ws://${window.location.host}/ws/messages`);
-
-    socket.onmessage = function (event) {
-        const data = JSON.parse(event.data);
+    // Connect to SocketIO
+    const socket = io();
+    
+    // Handle new messages
+    socket.on('new_message', function(data) {
         const conversation = document.getElementById('conversation');
-
-        const newMessage = document.createElement('div');
-        newMessage.classList.add('message', data.sender_id === {{ user.id }} ? 'sent' : 'received');
-        newMessage.innerHTML = `
-            <div class="message-content">
-                <p>${data.message_content}</p>
-                <small class="message-time">${new Date().toLocaleString()}</small>
-                {% if not selected_friend %}
-                <small class="message-info">To: ${data.recipient_username}</small>
-                {% endif %}
-            </div>
-        `;
-        conversation.appendChild(newMessage);
-
-        // Scroll to the bottom of the conversation
-        conversation.scrollTop = conversation.scrollHeight;
-    };
+        const isCurrentUser = data.sender_id === {{ user.id }};
+        const isCurrentConversation = {% if selected_friend %}data.sender_id === {{ selected_friend.id }} || data.recipient_id === {{ selected_friend.id }}{% else %}true{% endif %};
+        
+        if (isCurrentConversation) {
+            const newMessage = document.createElement('div');
+            newMessage.classList.add('message', isCurrentUser ? 'sent' : 'received');
+            
+            const messageTime = new Date(data.date).toLocaleString();
+            
+            newMessage.innerHTML = `
+                <div class="message-content">
+                    <p>${data.message_content}</p>
+                    <small class="message-time">${messageTime}</small>
+                    {% if not selected_friend %}
+                    <small class="message-info">
+                        ${isCurrentUser ? 'To: ' + data.recipient_username : 'From: ' + data.sender_username}
+                    </small>
+                    {% endif %}
+                </div>
+            `;
+            
+            conversation.appendChild(newMessage);
+            conversation.scrollTop = conversation.scrollHeight;
+        }
+    });
 
     // Handle form submission
-    document.getElementById('message-form').addEventListener('submit', function (e) {
-        e.preventDefault(); // Prevent the default form submission
-
+    document.getElementById('message-form').addEventListener('submit', function(e) {
+        e.preventDefault();
         const form = e.target;
+        const messageContent = document.getElementById('message-content').value.trim();
+        
+        if (!messageContent) return;
+        
+        {% if selected_friend %}
+        // For selected friend conversations - send via SocketIO
+        socket.emit('send_message', {
+            recipient_id: {{ selected_friend.id }},
+            message_content: messageContent
+        });
+        {% else %}
+        // For new message form - send via traditional AJAX
         const formData = new FormData(form);
-
         fetch(form.action, {
             method: 'POST',
             body: formData,
             headers: {
-                'X-Requested-With': 'XMLHttpRequest' // Indicate this is an AJAX request
+                'X-Requested-With': 'XMLHttpRequest'
             }
         })
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Clear the textarea
                 document.getElementById('message-content').value = '';
             } else {
                 alert('Failed to send message: ' + data.error);
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
         });
+        {% endif %}
+        
+        // Clear the input field
+        document.getElementById('message-content').value = '';
     });
 
     // Scroll to bottom on page load

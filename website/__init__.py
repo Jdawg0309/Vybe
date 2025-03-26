@@ -3,10 +3,12 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from dotenv import load_dotenv
 import os
+from flask_socketio import SocketIO
 
 # Initialize extensions
 db = SQLAlchemy()
 login_manager = LoginManager()
+socketio = SocketIO()
 
 def create_app():
     app = Flask(__name__)
@@ -36,8 +38,10 @@ def create_app():
     # Initialize extensions with the app
     db.init_app(app)
     login_manager.init_app(app)
+    socketio.init_app(app)
 
     # Register Blueprints
+    from . import sockets
     from .auth import auth
     from .profile import profile
     from .friends import friends
