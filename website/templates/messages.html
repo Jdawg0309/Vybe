@@ -48,7 +48,7 @@
                 <button type="submit" class="btn btn-primary">Send</button>
             </form>
             {% else %}
-            <h3>Your Messages</h3>
+            <h3> Your Messages</h3>
             <div class="conversation" id="conversation">
                 {% for message in messages|sort(attribute='date') %}
                 <div class="message {% if message.sender_id == user.id %}sent{% else %}received{% endif %}">

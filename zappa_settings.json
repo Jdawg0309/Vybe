@@ -1,0 +1,104 @@
+{
+    "'dev'": {
+        "app_function": "website.__init__.app",
+        "exclude": [
+            "boto3",
+            "dateutil",
+            "botocore",
+            "s3transfer",
+            "concurrent"
+        ],
+        "profile_name": null,
+        "project_name": "project-vybe-ma",
+        "runtime": "python3.8",
+        "s3_bucket": "zappa-a8ibodlut"
+    },
+    "'dev'_ap_east_1": {
+        "aws_region": "ap-east-1",
+        "extends": "'dev'"
+    },
+    "'dev'_ap_northeast_1": {
+        "aws_region": "ap-northeast-1",
+        "extends": "'dev'"
+    },
+    "'dev'_ap_northeast_2": {
+        "aws_region": "ap-northeast-2",
+        "extends": "'dev'"
+    },
+    "'dev'_ap_northeast_3": {
+        "aws_region": "ap-northeast-3",
+        "extends": "'dev'"
+    },
+    "'dev'_ap_south_1": {
+        "aws_region": "ap-south-1",
+        "extends": "'dev'"
+    },
+    "'dev'_ap_southeast_1": {
+        "aws_region": "ap-southeast-1",
+        "extends": "'dev'"
+    },
+    "'dev'_ap_southeast_2": {
+        "aws_region": "ap-southeast-2",
+        "extends": "'dev'"
+    },
+    "'dev'_ca_central_1": {
+        "aws_region": "ca-central-1",
+        "extends": "'dev'"
+    },
+    "'dev'_cn_north_1": {
+        "aws_region": "cn-north-1",
+        "extends": "'dev'"
+    },
+    "'dev'_cn_northwest_1": {
+        "aws_region": "cn-northwest-1",
+        "extends": "'dev'"
+    },
+    "'dev'_eu_central_1": {
+        "aws_region": "eu-central-1",
+        "extends": "'dev'"
+    },
+    "'dev'_eu_north_1": {
+        "aws_region": "eu-north-1",
+        "extends": "'dev'"
+    },
+    "'dev'_eu_west_1": {
+        "aws_region": "eu-west-1",
+        "extends": "'dev'"
+    },
+    "'dev'_eu_west_2": {
+        "aws_region": "eu-west-2",
+        "extends": "'dev'"
+    },
+    "'dev'_eu_west_3": {
+        "aws_region": "eu-west-3",
+        "extends": "'dev'"
+    },
+    "'dev'_sa_east_1": {
+        "aws_region": "sa-east-1",
+        "extends": "'dev'"
+    },
+    "'dev'_us_east_1": {
+        "aws_region": "us-east-1",
+        "extends": "'dev'"
+    },
+    "'dev'_us_east_2": {
+        "aws_region": "us-east-2",
+        "extends": "'dev'"
+    },
+    "'dev'_us_gov_east_1": {
+        "aws_region": "us-gov-east-1",
+        "extends": "'dev'"
+    },
+    "'dev'_us_gov_west_1": {
+        "aws_region": "us-gov-west-1",
+        "extends": "'dev'"
+    },
+    "'dev'_us_west_1": {
+        "aws_region": "us-west-1",
+        "extends": "'dev'"
+    },
+    "'dev'_us_west_2": {
+        "aws_region": "us-west-2",
+        "extends": "'dev'"
+    }
+}

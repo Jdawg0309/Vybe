@@ -47,12 +47,15 @@ def upload_profile_picture():
         flash('No file selected.', category='error')
         return redirect(url_for('profile.profile_view'))
 
+    # Define the upload folder path within static/images
+    upload_folder = os.path.join(current_app.root_path, 'static', 'images')
+    
     # Ensure upload folder exists
-    if not os.path.exists(current_app.config['UPLOAD_FOLDER']):
-        os.makedirs(current_app.config['UPLOAD_FOLDER'])
+    if not os.path.exists(upload_folder):
+        os.makedirs(upload_folder)
 
     if file and allowed_file(file.filename):
-        max_size = 5 * 1024 * 1024
+        max_size = 5 * 1024 * 1024  # 5MB
         file.seek(0, os.SEEK_END)
         file_size = file.tell()
         file.seek(0)
@@ -61,10 +64,17 @@ def upload_profile_picture():
             flash('File size exceeds the limit of 5MB.', category='error')
             return redirect(url_for('profile.profile_view'))
 
-        filename = secure_filename(file.filename)
-        file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
+        # Generate a unique filename to prevent collisions
+        filename = secure_filename(f"user_{current_user.id}_{file.filename}")
+        filepath = os.path.join(upload_folder, filename)
+        
+        # Save the file
+        file.save(filepath)
+        
+        # Update user's profile picture (just store the filename, not the full path)
         current_user.profile_picture = filename
         db.session.commit()
+        
         flash('Profile picture updated successfully.', category='success')
     else:
         flash('Invalid file type. Allowed types: png, jpg, jpeg, gif.', category='error')
