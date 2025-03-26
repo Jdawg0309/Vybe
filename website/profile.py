@@ -8,8 +8,7 @@ profile = Blueprint('profile', __name__)
 
 @profile.route('/profile')
 @login_required
-def profile_view():
-    user = current_user
+def profile_view(user = current_user):
     friends = (
         db.session.query(User)
         .join(Friends, (Friends.friend_id == User.id) | (Friends.user_id == User.id))
