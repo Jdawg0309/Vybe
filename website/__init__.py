@@ -56,7 +56,9 @@ def create_app():
     from .friends import friends
     from .messages import messages_bp  # Updated import
     from .notifications import notifications
-
+    from .posts import posts
+    
+    app.register_blueprint(posts, url_prefix="/")
     app.register_blueprint(auth, url_prefix="/")
     app.register_blueprint(profile, url_prefix="/")
     app.register_blueprint(friends, url_prefix="/")

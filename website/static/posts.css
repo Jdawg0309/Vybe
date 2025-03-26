@@ -1,0 +1,220 @@
+    /* posts.css */
+.posts-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.create-post-card {
+    background-color: var(--light);
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.dark .create-post-card {
+    background-color: var(--dark-light);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.post-form-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.post-user-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary);
+}
+
+.create-post-card textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 1rem;
+    border: 1px solid var(--gray);
+    border-radius: 0.5rem;
+    resize: vertical;
+    background-color: transparent;
+    color: var(--dark);
+}
+
+.dark .create-post-card textarea {
+    color: var(--light);
+    border-color: var(--dark-light);
+}
+
+.post-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.image-upload-btn {
+    background-color: var(--primary-light);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.image-upload-btn:hover {
+    background-color: var(--primary-dark);
+}
+
+.post-submit-btn {
+    background-color: var(--primary);
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.post-card {
+    background-color: var(--light);
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.dark .post-card {
+    background-color: var(--dark-light);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.post-content p {
+    color: var(--dark);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.dark .post-content p {
+    color: var(--light);
+}
+
+.post-image-container {
+    margin: 1rem 0;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.post-image {
+    width: 100%;
+    max-height: 500px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+}
+
+.post-stats {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1rem 0;
+    border-top: 1px solid var(--gray);
+    border-bottom: 1px solid var(--gray);
+    margin: 1rem 0;
+    color: var(--gray);
+}
+
+.post-actions button {
+    background: none;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    color: var(--gray);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.post-actions button:hover {
+    background-color: var(--primary-light);
+    color: white;
+}
+
+.comments-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--gray);
+}
+
+.comment-form {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.comment-form input {
+    flex: 1;
+    padding: 0.75rem;
+    border: 1px solid var(--gray);
+    border-radius: 0.5rem;
+    background-color: transparent;
+    color: var(--dark);
+}
+
+.dark .comment-form input {
+    color: var(--light);
+}
+
+.comment {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background-color: rgba(25, 118, 210, 0.1);
+    border-radius: 0.5rem;
+}
+
+.comment-user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.view-more-comments {
+    background: none;
+    border: none;
+    color: var(--primary);
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: opacity 0.3s ease;
+}
+
+.view-more-comments:hover {
+    opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    .posts-container {
+        padding: 0 0.5rem;
+    }
+    
+    .post-card {
+        padding: 1rem;
+    }
+    
+    .post-image {
+        max-height: 300px;
+    }
+    
+    .comment-form {
+        flex-direction: column;
+    }
+}

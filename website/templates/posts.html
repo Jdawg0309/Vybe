@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+{% block title %}Posts - Vybe{% endblock %}
+
+{% block content %}
+<div class="posts-container">
+    <!-- Post Creation Form -->
+    {% if current_user.is_authenticated %}
+    <div class="create-post-card">
+        <form action="{{ url_for('posts.create_post') }}" method="POST" enctype="multipart/form-data">
+            <div class="post-form-header">
+                <img src="{{ url_for('static', filename='images/' + current_user.profile_picture) }}" 
+                     alt="{{ current_user.username }}" class="post-user-avatar">
+                <h4>Create a Post</h4>
+            </div>
+            <textarea name="content" placeholder="What's on your mind?" required></textarea>
+            <div class="post-actions">
+                <label for="post-image" class="image-upload-btn">
+                    <i class="fas fa-image"></i> Add Image
+                    <input type="file" id="post-image" name="image" accept="image/*" style="display: none;">
+                </label>
+                <button type="submit" class="post-submit-btn">Post</button>
+            </div>
+            <div class="image-preview" id="image-preview" style="display: none;">
+                <img id="preview-image" src="#" alt="Preview" />
+                <button type="button" class="remove-image-btn" onclick="removeImage()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+
+    <!-- Posts Feed -->
+    <div class="posts-feed">
+        {% for post in posts %}
+        <div class="post-card" id="post-{{ post.id }}">
+            <div class="post-header">
+                <img src="{{ url_for('static', filename='images/' + post.user.profile_picture) }}" 
+                     alt="{{ post.user.username }}" class="post-user-avatar">
+                <div class="post-user-info">
+                    <a href="{{ url_for('profile.profile_view', user_id=post.user.id) }}" class="post-username">
+                        {{ post.user.username }}
+                    </a>
+                    <span class="post-time">{{ post.created_at.strftime('%b %d, %Y at %I:%M %p') }}</span>
+                </div>
+            </div>
+            
+            <div class="post-content">
+                <p>{{ post.content }}</p>
+                {% if post.image %}
+                <div class="post-image-container">
+                    <img src="{{ url_for('static', filename='images/' + post.image) }}" 
+                         alt="Post image" class="post-image">
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="post-stats">
+                <span class="likes-count">{{ post.likes.count() }} likes</span>
+                <span class="comments-count">{{ post.comments.count() }} comments</span>
+            </div>
+            
+            <div class="post-actions">
+                <button class="like-btn" data-post-id="{{ post.id }}">
+                    {% if current_user.is_authenticated and post.likes.filter_by(user_id=current_user.id).first() %}
+                        Unlike
+                    {% else %}
+                        Like
+                    {% endif %}
+                </button>
+                <button class="comment-btn" onclick="toggleCommentSection({{ post.id }})">Comment</button>
+            </div>
+            
+            <!-- Comments Section -->
+            <div class="comments-section" id="comments-{{ post.id }}" style="display: none;">
+                {% if current_user.is_authenticated %}
+                <form class="comment-form" data-post-id="{{ post.id }}">
+                    <input type="text" placeholder="Write a comment..." required>
+                    <button type="submit">Post</button>
+                </form>
+                {% endif %}
+                
+                <div class="comments-list">
+                    {% for comment in post.comments.order_by(Comment.created_at.desc()).limit(5) %}
+                    <div class="comment">
+                        <img src="{{ url_for('static', filename='images/' + comment.user.profile_picture) }}" 
+                             alt="{{ comment.user.username }}" class="comment-user-avatar">
+                        <div class="comment-content">
+                            <a href="{{ url_for('profile.profile_view', user_id=comment.user.id) }}" 
+                               class="comment-username">{{ comment.user.username }}</a>
+                            <p>{{ comment.content }}</p>
+                            <span class="comment-time">{{ comment.created_at.strftime('%b %d, %Y') }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                {% if post.comments.count() > 5 %}
+                <button class="view-more-comments" 
+                        onclick="loadMoreComments({{ post.id }}, 5)">
+                    View more comments
+                </button>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        <div class="no-posts">
+            <p>No posts to display. Be the first to post something!</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    // Comment form submission
+    document.querySelectorAll('.comment-form').forEach(form => {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const postId = e.target.dataset.postId;
+            const input = e.target.querySelector('input');
+            const commentsList = e.target.nextElementSibling;
+            
+            try {
+                const response = await fetch(`/comment/${postId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        content: input.value
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Create new comment element
+                    const commentElement = document.createElement('div');
+                    commentElement.className = 'comment';
+                    commentElement.innerHTML = `
+                        <img src="{{ url_for('static', filename='images/') }}${data.comment.user_picture}" 
+                             alt="${data.comment.username}" class="comment-user-avatar">
+                        <div class="comment-content">
+                            <a href="/profile/${data.comment.user_id}" class="comment-username">
+                                ${data.comment.username}
+                            </a>
+                            <p>${data.comment.content}</p>
+                            <span class="comment-time">Just now</span>
+                        </div>
+                    `;
+                    
+                    // Insert new comment at the top
+                    if (commentsList.children.length > 0) {
+                        commentsList.insertBefore(commentElement, commentsList.firstChild);
+                    } else {
+                        commentsList.appendChild(commentElement);
+                    }
+                    
+                    // Update comment count
+                    const postCard = e.target.closest('.post-card');
+                    const commentCount = postCard.querySelector('.comments-count');
+                    const currentCount = parseInt(commentCount.textContent.split(' ')[0]);
+                    commentCount.textContent = `${currentCount + 1} comments`;
+                    
+                    // Clear input
+                    input.value = '';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+    });
+
+    // Toggle comment section
+    function toggleCommentSection(postId) {
+        const commentSection = document.getElementById(`comments-${postId}`);
+        if (commentSection.style.display === 'none' || !commentSection.style.display) {
+            commentSection.style.display = 'block';
+        } else {
+            commentSection.style.display = 'none';
+        }
+    }
+
+    // Like button functionality
+    document.querySelectorAll('.like-btn').forEach(button => {
+        button.addEventListener('click', async (e) => {
+            const postId = e.target.dataset.postId;
+            
+            const response = await fetch(`/like/${postId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Update like count
+                const postCard = e.target.closest('.post-card');
+                const likeCount = postCard.querySelector('.likes-count');
+                const currentCount = parseInt(likeCount.textContent.split(' ')[0]);
+                
+                // Update like count and button text
+                if (data.action === 'liked') {
+                    likeCount.textContent = `${currentCount + 1} likes`;
+                    e.target.textContent = 'Unlike';
+                } else {
+                    likeCount.textContent = `${currentCount - 1} likes`;
+                    e.target.textContent = 'Like';
+                }
+            }
+        });
+    });
+
+    // Toggle comment section
+    function toggleCommentSection(postId) {
+        const commentSection = document.getElementById(`comments-${postId}`);
+        if (commentSection.style.display === 'none' || !commentSection.style.display) {
+            commentSection.style.display = 'block';
+        } else {
+            commentSection.style.display = 'none';
+        }
+    }
+</script>
+{% endblock %}

@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='notifications.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='posts.css') }}">
+
 
 
 
@@ -27,7 +29,12 @@
         </button>
         <ul class="navbar-nav" id="navbar-nav">
             {% if current_user.is_authenticated %}
-                <li class="nav-item dropdown">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('posts.posts_view') }}">
+                    <i class="fas fa-newspaper"></i> Posts
+                </a>
+            </li>    
+            <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#">
                         <i class="fas fa-user"></i> {{ current_user.username }}
                     </a>
@@ -127,6 +134,38 @@
         if (savedTheme === 'dark') {
             body.classList.add('dark-theme');
         }
+        // Like posts
+        document.querySelectorAll('.like-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const postId = e.target.dataset.postId;
+                const response = await fetch(`/like_post/${postId}`, { method: 'POST' });
+                const data = await response.json();
+                
+                e.target.textContent = data.liked ? 'Unlike' : 'Like';
+                e.target.nextElementSibling.textContent = data.count;
+            });
+        });
+
+        // Add comments
+        document.querySelectorAll('.comment-form').forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const postId = e.target.dataset.postId;
+                const input = e.target.querySelector('input');
+                
+                const response = await fetch(`/comment/${postId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `content=${encodeURIComponent(input.value)}`
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    // Add new comment to UI
+                    input.value = '';
+                }
+            });
+        });
     </script>
 </body>
 </html>
