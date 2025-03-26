@@ -13,8 +13,8 @@ socketio = SocketIO()
 def create_app():
     app = Flask(__name__)
 
-    app.config['UPLOAD_FOLDER'] = os.path.join(app.instance_path, 'uploads')
-    app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024  # 5MB file size limit
+    app.config['UPLOAD_FOLDER'] = '/home/ubuntu/uploads'  # AWS path
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
     
     # Make sure the upload folder exists
     try:
