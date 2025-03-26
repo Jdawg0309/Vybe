@@ -47,6 +47,10 @@ def upload_profile_picture():
         flash('No file selected.', category='error')
         return redirect(url_for('profile.profile_view'))
 
+    # Ensure upload folder exists
+    if not os.path.exists(current_app.config['UPLOAD_FOLDER']):
+        os.makedirs(current_app.config['UPLOAD_FOLDER'])
+
     if file and allowed_file(file.filename):
         max_size = 5 * 1024 * 1024
         file.seek(0, os.SEEK_END)
