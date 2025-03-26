@@ -1,10 +1,14 @@
 /* Profile Page Styling */
 .profile-card {
-    background-color: #fff;
+    background-color: var(--light);
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     padding: 30px;
     margin-bottom: 30px;
+}
+
+.dark .profile-card {
+    background-color: var(--dark-light);
 }
 
 /* Profile Header */
@@ -13,7 +17,7 @@
     align-items: center;
     margin-bottom: 30px;
     padding-bottom: 25px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--gray);
 }
 
 .profile-avatar {
@@ -26,8 +30,12 @@
     height: 120px;
     border-radius: 50%;
     object-fit: cover;
-    border: 4px solid #fff;
+    border: 4px solid var(--light);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dark .avatar {
+    border-color: var(--dark-light);
 }
 
 .profile-info {
@@ -37,11 +45,15 @@
 .profile-username {
     font-size: 2rem;
     margin: 0 0 10px 0;
-    color: #333;
+    color: var(--dark);
+}
+
+.dark .profile-username {
+    color: var(--light);
 }
 
 .profile-bio {
-    color: #666;
+    color: var(--gray);
     margin: 0 0 15px 0;
     line-height: 1.5;
     max-width: 600px;
@@ -61,12 +73,12 @@
     display: block;
     font-size: 1.5rem;
     font-weight: 600;
-    color: #1976d2;
+    color: var(--primary);
 }
 
 .stat-label {
     font-size: 0.9rem;
-    color: #777;
+    color: var(--gray);
 }
 
 /* Profile Actions */
@@ -87,30 +99,38 @@
 }
 
 .btn-edit {
-    background-color: #1976d2;
+    background-color: var(--primary);
     color: white;
 }
 
 .btn-edit:hover {
-    background-color: #1565c0;
+    background-color: var(--primary-dark);
 }
 
 .btn-logout {
-    background-color: #f5f5f5;
-    color: #d32f2f;
+    background-color: var(--light);
+    color: var(--danger);
+}
+
+.dark .btn-logout {
+    background-color: var(--dark);
 }
 
 .btn-logout:hover {
-    background-color: #ebebeb;
+    background-color: var(--gray);
 }
 
 /* Sections */
 .section-title {
     font-size: 1.4rem;
     margin: 30px 0 20px 0;
-    color: #333;
+    color: var(--dark);
     padding-bottom: 10px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid var(--gray);
+}
+
+.dark .section-title {
+    color: var(--light);
 }
 
 /* Friends Section */
@@ -122,12 +142,16 @@
 }
 
 .friend-card {
-    background-color: #1976d2;
+    background-color: var(--light);
     border-radius: 10px;
     padding: 15px;
     display: flex;
     align-items: center;
     transition: transform 0.2s ease;
+}
+
+.dark .friend-card {
+    background-color: var(--dark);
 }
 
 .friend-card:hover {
@@ -141,7 +165,11 @@
     border-radius: 50%;
     object-fit: cover;
     margin-right: 15px;
-    border: 2px solid #fff;
+    border: 2px solid var(--light);
+}
+
+.dark .friend-avatar {
+    border-color: var(--dark-light);
 }
 
 .friend-info {
@@ -152,16 +180,20 @@
 .friend-username {
     margin: 0 0 5px 0;
     font-size: 1rem;
-    color: #333;
+    color: var(--dark);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
+.dark .friend-username {
+    color: var(--light);
+}
+
 .friend-bio {
     margin: 0;
     font-size: 0.85rem;
-    color: #666;
+    color: var(--gray);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -175,33 +207,45 @@
 }
 
 .btn-message {
-    background-color: #e3f2fd;
-    color: #1976d2;
+    background-color: var(--light);
+    color: var(--primary);
     font-size: 0.8rem;
     padding: 5px 10px;
+}
+
+.dark .btn-message {
+    background-color: var(--dark);
 }
 
 .btn-message:hover {
-    background-color: #d0e3f7;
+    background-color: var(--gray);
 }
 
 .btn-remove {
-    background-color: #ffebee;
-    color: #d32f2f;
+    background-color: var(--light);
+    color: var(--danger);
     font-size: 0.8rem;
     padding: 5px 10px;
 }
 
+.dark .btn-remove {
+    background-color: var(--dark);
+}
+
 .btn-remove:hover {
-    background-color: #f8d7da;
+    background-color: var(--gray);
 }
 
 .no-friends {
-    color: #777;
+    color: var(--gray);
     text-align: center;
     padding: 20px;
-    background-color: #f9f9f9;
+    background-color: var(--light);
     border-radius: 8px;
+}
+
+.dark .no-friends {
+    background-color: var(--dark);
 }
 
 /* Add Friend Section */
@@ -214,20 +258,20 @@
 .form-control {
     flex: 1;
     padding: 10px 15px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--gray);
     border-radius: 8px;
     font-size: 1rem;
     transition: border 0.2s ease;
 }
 
 .form-control:focus {
-    border-color: #1976d2;
+    border-color: var(--primary);
     outline: none;
-    box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+    box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
 }
 
 .btn-add {
-    background-color: #4caf50;
+    background-color: var(--success);
     color: white;
 }
 
@@ -244,11 +288,15 @@
 }
 
 .pending-card {
-    background-color: #fff8e1;
+    background-color: var(--light);
     border-radius: 10px;
     padding: 15px;
     display: flex;
     align-items: center;
+}
+
+.dark .pending-card {
+    background-color: var(--dark);
 }
 
 .pending-avatar {
@@ -257,7 +305,11 @@
     border-radius: 50%;
     object-fit: cover;
     margin-right: 15px;
-    border: 2px solid #fff;
+    border: 2px solid var(--light);
+}
+
+.dark .pending-avatar {
+    border-color: var(--dark-light);
 }
 
 .pending-info {
@@ -267,13 +319,17 @@
 .pending-username {
     margin: 0 0 5px 0;
     font-size: 1rem;
-    color: #333;
+    color: var(--dark);
+}
+
+.dark .pending-username {
+    color: var(--light);
 }
 
 .pending-status {
     margin: 0;
     font-size: 0.85rem;
-    color: #ff8f00;
+    color: var(--warning);
     font-weight: 500;
 }
 
@@ -284,33 +340,45 @@
 }
 
 .btn-accept {
-    background-color: #e8f5e9;
-    color: #2e7d32;
+    background-color: var(--light);
+    color: var(--success);
     font-size: 0.8rem;
     padding: 5px 10px;
+}
+
+.dark .btn-accept {
+    background-color: var(--dark);
 }
 
 .btn-accept:hover {
-    background-color: #d4edda;
+    background-color: var(--gray);
 }
 
 .btn-reject {
-    background-color: #ffebee;
-    color: #d32f2f;
+    background-color: var(--light);
+    color: var(--danger);
     font-size: 0.8rem;
     padding: 5px 10px;
 }
 
+.dark .btn-reject {
+    background-color: var(--dark);
+}
+
 .btn-reject:hover {
-    background-color: #f8d7da;
+    background-color: var(--gray);
 }
 
 .no-pending {
-    color: #777;
+    color: var(--gray);
     text-align: center;
     padding: 20px;
-    background-color: #f9f9f9;
+    background-color: var(--light);
     border-radius: 8px;
+}
+
+.dark .no-pending {
+    background-color: var(--dark);
 }
 
 /* Responsive Design */
