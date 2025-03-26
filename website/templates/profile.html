@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="profile-card">
+                <!-- Profile Header -->
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <img src="{{ url_for('static', filename='images/' + user.profile_picture) }}" alt="{{ user.username }}" class="avatar">
+                    </div>
+                    <div class="profile-info">
+                        <h1 class="profile-username">{{ user.username }}</h1>
+                        <p class="profile-bio">{{ user.bio if user.bio else 'No bio available.' }}</p>
+                        <div class="profile-stats">
+                            <div class="stat">
+                                <span class="stat-number">{{ user.friend_count }}</span>
+                                <span class="stat-label">Friends</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-number">{{ user.messages_received|length }}</span>
+                                <span class="stat-label">Messages</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Actions -->
+                <div class="profile-actions">
+                    <a href="{{ url_for('profile.profile_view') }}" class="btn btn-edit">Edit Profile</a>
+                    <a href="{{ url_for('auth.logout') }}" class="btn btn-logout">Logout</a>
+                </div>
+
+                <!-- Friends List -->
+                <div class="friends-section">
+                    <h3 class="section-title">Friends</h3>
+                    {% if friends %}
+                    <div class="friends-grid">
+                        {% for friend in friends %}
+                        <div class="friend-card">
+                            <img src="{{ url_for('static', filename='images/' + friend.profile_picture) }}" alt="{{ friend.username }}" class="friend-avatar">
+                            <div class="friend-info">
+                                <h5 class="friend-username">{{ friend.username }}</h5>
+                                <p class="friend-bio">{{ friend.bio if friend.bio else 'No bio available.' }}</p>
+                            </div>
+                            <div class="friend-actions">
+                                <a href="{{ url_for('messages.messages_main', friend_id=friend.id) }}" class="btn btn-message">Message</a>
+                                <form action="{{ url_for('friends.remove_friend') }}" method="POST" class="d-inline">
+                                    <input type="hidden" name="friend_id" value="{{ friend.id }}">
+                                    <button type="submit" class="btn btn-remove">Remove</button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="no-friends">You have no friends yet. Add some friends to get started!</p>
+                    {% endif %}
+                </div>
+
+                <!-- Add Friend Section -->
+                <div class="add-friend-section">
+                    <h3 class="section-title">Add Friend</h3>
+                    <form action="{{ url_for('friends.add_friend') }}" method="POST" class="add-friend-form">
+                        <input type="text" name="friend_username" class="form-control" placeholder="Enter friend's username" required>
+                        <button type="submit" class="btn btn-add">Add Friend</button>
+                    </form>
+                </div>
+
+                <!-- Pending Friend Requests -->
+                <div class="pending-requests-section">
+                    <h3 class="section-title">Pending Requests</h3>
+                    {% if pending_requests %}
+                    <div class="pending-grid">
+                        {% for request in pending_requests %}
+                        <div class="pending-card">
+                            <img src="{{ url_for('static', filename='images/' + request.User.profile_picture) }}" alt="{{ request.User.username }}" class="pending-avatar">
+                            <div class="pending-info">
+                                <h5 class="pending-username">{{ request.User.username }}</h5>
+                                <p class="pending-status">Pending Request</p>
+                            </div>
+                            <div class="pending-actions">
+                                <form action="{{ url_for('friends.accept_friend') }}" method="POST" class="d-inline">
+                                    <input type="hidden" name="request_id" value="{{ request.Friends.id }}">
+                                    <button type="submit" class="btn btn-accept">Accept</button>
+                                </form>
+                                <form action="{{ url_for('friends.reject_friend') }}" method="POST" class="d-inline">
+                                    <input type="hidden" name="request_id" value="{{ request.Friends.id }}">
+                                    <button type="submit" class="btn btn-reject">Reject</button>
+                                </form>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="no-pending">No pending friend requests.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Your Notifications</h1>
+    <p>Stay updated with the latest activities.</p>
+
+    <!-- Mark All as Read Button -->
+    <div class="text-end mb-3">
+        <form action="{{ url_for('notifications.mark_all_as_read') }}" method="POST">
+            <button type="submit" class="btn btn-primary">Mark All as Read</button>
+        </form>
+    </div>
+
+    <!-- Notifications List -->
+    <div class="notifications-list">
+        {% if notifications %}
+        <ul class="list-group">
+            {% for notification in notifications %}
+            <li class="list-group-item {% if not notification.is_read %}unread{% endif %}">
+                <div class="notification-content">
+                    <p>{{ notification.notification_content }}</p>
+                    <small class="text-muted">{{ notification.date.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+                </div>
+                {% if not notification.is_read %}
+                <form action="{{ url_for('notifications.mark_as_read', notification_id=notification.id) }}" method="POST" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-outline-success">Mark as Read</button>
+                </form>
+                {% else %}
+                <span class="badge bg-success">Read</span>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-center">No new notifications.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

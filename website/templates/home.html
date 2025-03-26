@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="hero-section text-center py-5">
+        <h1 class="hero-title">Welcome to Vybe</h1>
+        <p class="hero-subtitle">Minimalist Social Experience</p>
+        <a href="{{ url_for('auth.signup') }}" class="btn btn-primary btn-lg">Get Started</a>
+    </div>
+
+    <!-- Features Section -->
+    <div class="features-section">
+        <h2 class="section-title text-center">Why Choose Vybe?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i> <!-- Connect Icon -->
+                </div>
+                <h3 class="feature-title">Connect</h3>
+                <p class="feature-text">Build meaningful connections with friends and family.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-comments"></i> <!-- Communicate Icon -->
+                </div>
+                <h3 class="feature-title">Communicate</h3>
+                <p class="feature-text">Seamless conversations with real-time messaging.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-cogs"></i> <!-- Customize Icon -->
+                </div>
+                <h3 class="feature-title">Customize</h3>
+                <p class="feature-text">Tailor your experience with personalized settings.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Testimonials Section -->
+    <div class="testimonials-section">
+        <h2 class="section-title text-center">What Our Users Say</h2>
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <div class="testimonial-text">
+                    "Vybe has completely changed the way I connect with my friends. It's simple and intuitive!"
+                </div>
+                <div class="testimonial-author">
+                    <img src="{{ url_for('static', filename='images/user1.jpg') }}" alt="User 1" class="testimonial-avatar">
+                    <span class="testimonial-name">John Doe</span>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-text">
+                    "The real-time messaging feature is amazing. I can stay in touch with my family effortlessly."
+                </div>
+                <div class="testimonial-author">
+                    <img src="{{ url_for('static', filename='images/user2.jpg') }}" alt="User 2" class="testimonial-avatar">
+                    <span class="testimonial-name">Jane Smith</span>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-text">
+                    "I love how customizable Vybe is. It feels like it was made just for me!"
+                </div>
+                <div class="testimonial-author">
+                    <img src="{{ url_for('static', filename='images/user3.jpg') }}" alt="User 3" class="testimonial-avatar">
+                    <span class="testimonial-name">Alex Johnson</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

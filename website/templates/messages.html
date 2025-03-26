@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block title %}Messages{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Your Messages</h1>
+    <p>Chat with your friends or send a message to any user.</p>
+
+    <div class="messages-container">
+        <!-- Friends List -->
+        <div class="message-list">
+            <h3>Conversations</h3>
+            <ul>
+                {% for friend in friends_with_unread %}
+                <li>
+                    <a href="{{ url_for('messages.messages_main', friend_id=friend.friend.id) }}" class="friend-link {% if selected_friend and friend.friend.id == selected_friend.id %}active{% endif %}">
+                        <img src="{{ url_for('static', filename='images/' + friend.friend.profile_picture) }}" alt="{{ friend.friend.username }}" class="friend-avatar">
+                        <span class="friend-username">{{ friend.friend.username }}</span>
+                        {% if friend.unread_count > 0 %}
+                            <span class="unread-badge">{{ friend.unread_count }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Message Content -->
+        <div class="message-content">
+            {% if selected_friend %}
+            <div class="chat-header">
+                <img src="{{ url_for('static', filename='images/' + selected_friend.profile_picture) }}" alt="{{ selected_friend.username }}" class="chat-avatar">
+                <h3>Chat with {{ selected_friend.username }}</h3>
+            </div>
+            <div class="conversation" id="conversation">
+                {% for message in messages|sort(attribute='date') %}
+                <div class="message {% if message.sender_id == user.id %}sent{% else %}received{% endif %}">
+                    <div class="message-content">
+                        <p>{{ message.message_content }}</p>
+                        <small class="message-time">{{ message.date.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <form id="message-form" action="{{ url_for('messages.messages_main', friend_id=selected_friend.id) }}" method="POST" class="message-form">
+                <textarea id="message-content" name="message_content" class="form-control" placeholder="Type your message here..." required></textarea>
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+            {% else %}
+            <h3>Your Messages</h3>
+            <div class="conversation" id="conversation">
+                {% for message in messages|sort(attribute='date') %}
+                <div class="message {% if message.sender_id == user.id %}sent{% else %}received{% endif %}">
+                    <div class="message-content">
+                        <p>{{ message.message_content }}</p>
+                        <small class="message-time">{{ message.date.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+                        <small class="message-info">
+                            {% if message.sender_id == user.id %}
+                                To: {{ message.recipient.username }}
+                            {% else %}
+                                From: {{ message.sender.username }}
+                            {% endif %}
+                        </small>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <h3>Send a Message to Any User</h3>
+            <form id="message-form" action="{{ url_for('messages.messages_main') }}" method="POST" class="message-form">
+                <div class="form-group mb-3">
+                    <label for="recipient_username">Recipient Username</label>
+                    <input type="text" name="recipient_username" class="form-control" placeholder="Enter recipient's username" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="message_content">Message</label>
+                    <textarea id="message-content" name="message_content" class="form-control" placeholder="Type your message here..." rows="5" required></textarea>
+                </div>
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </div>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Add JavaScript for Real-Time Messaging -->
+<script>
+    // WebSocket for Real-Time Messaging
+    const socket = new WebSocket(`ws://${window.location.host}/ws/messages`);
+
+    socket.onmessage = function (event) {
+        const data = JSON.parse(event.data);
+        const conversation = document.getElementById('conversation');
+
+        const newMessage = document.createElement('div');
+        newMessage.classList.add('message', data.sender_id === {{ user.id }} ? 'sent' : 'received');
+        newMessage.innerHTML = `
+            <div class="message-content">
+                <p>${data.message_content}</p>
+                <small class="message-time">${new Date().toLocaleString()}</small>
+                {% if not selected_friend %}
+                <small class="message-info">To: ${data.recipient_username}</small>
+                {% endif %}
+            </div>
+        `;
+        conversation.appendChild(newMessage);
+
+        // Scroll to the bottom of the conversation
+        conversation.scrollTop = conversation.scrollHeight;
+    };
+
+    // Handle form submission
+    document.getElementById('message-form').addEventListener('submit', function (e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        const form = e.target;
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest' // Indicate this is an AJAX request
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Clear the textarea
+                document.getElementById('message-content').value = '';
+            } else {
+                alert('Failed to send message: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    });
+
+    // Scroll to bottom on page load
+    window.addEventListener('load', function() {
+        const conversation = document.getElementById('conversation');
+        if (conversation) {
+            conversation.scrollTop = conversation.scrollHeight;
+        }
+    });
+</script>
+{% endblock %}

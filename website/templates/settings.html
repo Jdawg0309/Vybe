@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title text-center">Settings</h2>
+                </div>
+                <div class="card-body">
+                    <p class="card-text text-center">Customize your experience.</p>
+
+                    <!-- Profile Picture Upload -->
+                    <div class="settings-section mb-4">
+                        <h3 class="text-center mb-3">Profile Picture</h3>
+                        <form action="{{ url_for('profile.upload_profile_picture') }}" method="POST" enctype="multipart/form-data">
+                            <div class="form-group text-center">
+                                <input type="file" name="profile_picture" accept="image/*" class="form-control">
+                            </div>
+                            <div class="form-group text-center mt-3">
+                                <button type="submit" class="btn btn-primary btn-lg">Upload</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Password Change -->
+                    <div class="settings-section mb-4">
+                        <h3 class="text-center mb-3">Change Password</h3>
+                        <form action="{{ url_for('auth.change_password') }}" method="POST">
+                            <div class="form-group mb-3">
+                                <input type="password" name="old_password" class="form-control" placeholder="Old Password" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <input type="password" name="new_password" class="form-control" placeholder="New Password" required>
+                            </div>
+                            <div class="form-group mb-4">
+                                <input type="password" name="confirm_password" class="form-control" placeholder="Confirm New Password" required>
+                            </div>
+                            <div class="form-group text-center">
+                                <button type="submit" class="btn btn-primary btn-lg">Change Password</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Account Actions -->
+                    <div class="settings-section text-center">
+                        <h3 class="text-center mb-3">Account Actions</h3>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-lg btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">Delete Account</button>
+                            <button class="btn btn-lg btn-secondary">Log Out</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Account Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form action="{{ url_for('auth.delete_account') }}" method="POST">
+                    <button type="submit" class="btn btn-danger">Delete Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
